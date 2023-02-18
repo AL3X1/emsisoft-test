@@ -26,10 +26,6 @@
       <ProjectReference Include="..\EmsisoftTest.Data\EmsisoftTest.Data.csproj" />
       <ProjectReference Include="..\EmsisoftTest.Messaging\EmsisoftTest.Messaging.csproj" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Models" />
-    </ItemGroup>
 
 
     <PropertyGroup>

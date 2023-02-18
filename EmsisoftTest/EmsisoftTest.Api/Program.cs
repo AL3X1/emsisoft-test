@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using EmsisoftTest.Data.Contexts;
 using EmsisoftTest.Infrastructure.Configurations;
 using EmsisoftTest.Infrastructure.Initializers;
+using EmsisoftTest.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -40,14 +41,9 @@ public class Program
         ConfigureSwagger(services);
         
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(ContainerInitializer.Initialize));
+        MessageQueueInitializer.Initialize(settings.Queue);
         var app = builder.Build();
 
-        app.UseHttpsRedirection();
-        app.UseCors(x => x
-            .AllowAnyHeader()
-            .AllowAnyOrigin()
-            .AllowAnyMethod());
-        
         app.UseRouting();
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 

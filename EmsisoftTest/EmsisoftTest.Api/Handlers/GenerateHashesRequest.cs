@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace EmsisoftTest.Api.Handlers.GenerateHash;
+namespace EmsisoftTest.Api.Handlers;
 
 public class GenerateHashesRequest : IRequest<Unit>
 {

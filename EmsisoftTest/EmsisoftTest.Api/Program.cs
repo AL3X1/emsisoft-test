@@ -3,8 +3,6 @@ using Autofac.Extensions.DependencyInjection;
 using EmsisoftTest.Data.Contexts;
 using EmsisoftTest.Infrastructure.Configurations;
 using EmsisoftTest.Infrastructure.Initializers;
-using EmsisoftTest.Messaging;
-using EmsisoftTest.Messaging.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 

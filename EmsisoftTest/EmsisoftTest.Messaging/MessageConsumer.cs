@@ -1,9 +1,8 @@
 using System.Text;
+using System.Text.Json;
 using EmsisoftTest.Infrastructure.Configurations;
 using EmsisoftTest.Messaging.Interfaces;
-using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 
 namespace EmsisoftTest.Messaging;
 
@@ -12,12 +11,9 @@ public class MessageConsumer : IMessageConsumer, IDisposable
     private readonly QueueSettings _queueSettings;
 
     private readonly IModel _channel;
-
-    private readonly ILogger<MessageConsumer> _logger;
-
-    public MessageConsumer(AppSettings appSettings, ILogger<MessageConsumer> logger)
+    
+    public MessageConsumer(AppSettings appSettings)
     {
-        _logger = logger;
         _queueSettings = appSettings.Queue;
         
         var factory = new ConnectionFactory
@@ -33,22 +29,41 @@ public class MessageConsumer : IMessageConsumer, IDisposable
         _channel.QueueBind(_queueSettings.Name, _queueSettings.Exchange, string.Empty);
     }
 
-    public void StartConsuming(Func<string, Task> messageReceivedAction)
+    public List<MessagePayload<T>> FetchMessages<T>()
     {
-        var consumer = new EventingBasicConsumer(_channel);
-        consumer.Received += async (sender, args) =>
+        var messages = new List<MessagePayload<T>>();
+        var count = _channel.MessageCount(_queueSettings.Name);
+
+        while (messages.Count < count)
         {
-            var body = args.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
-            _logger.LogInformation($"Received: {message}");
-            await messageReceivedAction(message);
-        };
-        
-        _channel.BasicConsume(consumer, _queueSettings.Name);
+            var payload = FetchMessage<T>();
+
+            if (payload != null)
+            {
+                messages.Add(payload);
+            }   
+        }
+
+        return messages;
     }
 
     public void Dispose()
     {
         _channel.Dispose();
+    }
+    
+    private MessagePayload<T>? FetchMessage<T>()
+    {
+        var result = _channel.BasicGet(_queueSettings.Name, true);
+
+        if (result == null)
+        {
+            return null;
+        }
+        
+        var body = result.Body.ToArray();
+        var message = Encoding.UTF8.GetString(body);
+        
+        return JsonSerializer.Deserialize<MessagePayload<T>>(message);
     }
 }

@@ -1,4 +1,3 @@
-using System.Text.Json;
 using EmsisoftTest.Domain.Commands;
 using EmsisoftTest.Infrastructure.Interfaces;
 using EmsisoftTest.Messaging;
@@ -8,40 +7,51 @@ namespace EmsisoftTest.Processor;
 
 public class HashProcessor : BackgroundService
 {
+    private const int MaxConcurrencyDegree = 4;
+    
     private readonly ILogger<HashProcessor> _logger;
     private readonly IMessageConsumer _messageConsumer;
-    private readonly ICommandBuilder _commandBuilder;
-    
-    public HashProcessor(ILogger<HashProcessor> logger, IMessageConsumer messageConsumer, ICommandBuilder commandBuilder)
+    private readonly IServiceProvider _serviceProvider;
+
+    public HashProcessor(ILogger<HashProcessor> logger, IMessageConsumer messageConsumer, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _messageConsumer = messageConsumer;
-        _commandBuilder = commandBuilder;
+        _serviceProvider = serviceProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _messageConsumer.StartConsuming(ProcessMessageAsync);
-    }
-    
-    private async Task ProcessMessageAsync(string message)
-    {
-        try
+        var parallelOptions = new ParallelOptions
         {
-            var payload = JsonSerializer.Deserialize<MessagePayload<string>>(message);
+            MaxDegreeOfParallelism = MaxConcurrencyDegree
+        };
 
-            if (payload == null)
-            {
-                _logger.LogInformation("Could not process empty payload");
-                return;
-            }
-            
-            var context = new AddHashContext(payload.Data);
-            await _commandBuilder.ExecuteAsync(context);
-        }
-        catch(Exception e)
+        while (!stoppingToken.IsCancellationRequested)
         {
-            _logger.LogCritical(e.ToString());
+            try
+            {
+                var messages = _messageConsumer.FetchMessages<string>();
+                await Parallel.ForEachAsync(messages, parallelOptions, ProcessMessage);
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e.ToString());
+            }
         }
+    }
+
+    private async ValueTask ProcessMessage(MessagePayload<string> message, CancellationToken cancellationToken)
+    {
+        var scope = _serviceProvider.CreateScope();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<HashProcessor>>();
+        var commandBuilder = scope.ServiceProvider.GetRequiredService<ICommandBuilder>();
+        
+        logger.LogInformation($"Processing {message.Data}...");
+        
+        var context = new AddHashContext(message.Data);
+        await commandBuilder.ExecuteAsync(context);
+
+        logger.LogInformation($"Processed {message.Data}...");
     }
 }

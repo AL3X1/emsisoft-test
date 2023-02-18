@@ -1,5 +1,4 @@
 using EmsisoftTest.Api.Handlers;
-using EmsisoftTest.Api.Handlers.GenerateHash;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

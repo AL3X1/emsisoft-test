@@ -17,16 +17,18 @@ public class HashesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetHashes([FromQuery] int count = 40000)
+    public async Task<IActionResult> GetHashes()
     {
-        var request = new GenerateHashesRequest(count);
-        await _mediator.Send(request);
-        return Ok();
+        var request = new GetHashesRequest();
+        var hashes = await _mediator.Send(request);
+        return Ok(hashes);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateHashes()
+    public async Task<IActionResult> CreateHashes([FromQuery] int count = 40000)
     {
+        var request = new GenerateHashesRequest(count);
+        await _mediator.Send(request);
         return Ok();
     }
 }

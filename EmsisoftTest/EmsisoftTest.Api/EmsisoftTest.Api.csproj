@@ -21,6 +21,7 @@
     </ItemGroup>
     
     <ItemGroup>
+      <ProjectReference Include="..\EmsisoftTest.Domain\EmsisoftTest.Domain.csproj" />
       <ProjectReference Include="..\EmsisoftTest.Infrastructure\EmsisoftTest.Infrastructure.csproj" />
       <ProjectReference Include="..\EmsisoftTest.Data\EmsisoftTest.Data.csproj" />
       <ProjectReference Include="..\EmsisoftTest.Messaging\EmsisoftTest.Messaging.csproj" />

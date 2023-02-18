@@ -1,13 +1,12 @@
 using Autofac;
 using EmsisoftTest.Infrastructure.Modules;
 
-namespace EmsisoftTest.Infrastructure.Initializers
+namespace EmsisoftTest.Infrastructure.Initializers;
+
+public static class ContainerInitializer
 {
-    public static class ContainerInitializer
+    public static void Initialize(ContainerBuilder containerBuilder)
     {
-        public static void Initialize(ContainerBuilder containerBuilder)
-        {
-            containerBuilder.RegisterModule<InfrastructureModule>();
-        }
+        containerBuilder.RegisterModule<InfrastructureModule>();
     }
 }

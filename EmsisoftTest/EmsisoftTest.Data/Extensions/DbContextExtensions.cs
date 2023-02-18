@@ -1,25 +1,24 @@
 using EmsisoftTest.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmsisoftTest.Data.Extensions
+namespace EmsisoftTest.Data.Extensions;
+
+public static class DbContextExtensions
 {
-    public static class DbContextExtensions
+    public static void IncludeEntityFieldsAudition(this DbContext context)
     {
-        public static void IncludeEntityFieldsAudition(this DbContext context)
+        var entities = context.ChangeTracker
+            .Entries()
+            .Where(x => x.Entity is IEntityBase &&
+                        (x.State == EntityState.Added || x.State == EntityState.Modified));
+
+        foreach (var entity in entities)
         {
-            var entities = context.ChangeTracker
-                .Entries()
-                .Where(x => x.Entity is IEntityBase &&
-                            (x.State == EntityState.Added || x.State == EntityState.Modified));
+            var entityBase = (IEntityBase) entity.Entity;
 
-            foreach (var entity in entities)
-            {
-                var entityBase = (IEntityBase) entity.Entity;
+            if (entity.State == EntityState.Added) entityBase.CreatedAt = DateTime.UtcNow;
 
-                if (entity.State == EntityState.Added) entityBase.CreatedAt = DateTime.UtcNow;
-
-                entityBase.UpdatedAt = DateTime.UtcNow;
-            }
+            entityBase.UpdatedAt = DateTime.UtcNow;
         }
     }
 }

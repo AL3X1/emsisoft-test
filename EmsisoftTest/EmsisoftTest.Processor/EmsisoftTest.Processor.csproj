@@ -8,11 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MediatR" Version="12.0.0" />
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EmsisoftTest.Domain\EmsisoftTest.Domain.csproj" />
       <ProjectReference Include="..\EmsisoftTest.Infrastructure\EmsisoftTest.Infrastructure.csproj" />
       <ProjectReference Include="..\EmsisoftTest.Data\EmsisoftTest.Data.csproj" />
       <ProjectReference Include="..\EmsisoftTest.Messaging\EmsisoftTest.Messaging.csproj" />

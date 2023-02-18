@@ -1,5 +1,7 @@
+using System.Text;
 using EmsisoftTest.Infrastructure.Configurations;
 using EmsisoftTest.Messaging.Interfaces;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -11,8 +13,11 @@ public class MessageConsumer : IMessageConsumer, IDisposable
 
     private readonly IModel _channel;
 
-    public MessageConsumer(AppSettings appSettings)
+    private readonly ILogger<MessageConsumer> _logger;
+
+    public MessageConsumer(AppSettings appSettings, ILogger<MessageConsumer> logger)
     {
+        _logger = logger;
         _queueSettings = appSettings.Queue;
         
         var factory = new ConnectionFactory
@@ -28,10 +33,17 @@ public class MessageConsumer : IMessageConsumer, IDisposable
         _channel.QueueBind(_queueSettings.Name, _queueSettings.Exchange, string.Empty);
     }
 
-    public void StartConsuming(EventHandler<BasicDeliverEventArgs> messageReceivedAction)
+    public void StartConsuming(Func<string, Task> messageReceivedAction)
     {
         var consumer = new EventingBasicConsumer(_channel);
-        consumer.Received += messageReceivedAction;
+        consumer.Received += async (sender, args) =>
+        {
+            var body = args.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            _logger.LogInformation($"Received: {message}");
+            await messageReceivedAction(message);
+        };
+        
         _channel.BasicConsume(consumer, _queueSettings.Name);
     }
 

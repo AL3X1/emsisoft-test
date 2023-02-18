@@ -1,9 +1,8 @@
 using System.Reflection;
 using Autofac.Extensions.DependencyInjection;
-using EmsisoftTest.Api.Extensions;
+using EmsisoftTest.Data.Contexts;
 using EmsisoftTest.Infrastructure.Configurations;
 using EmsisoftTest.Infrastructure.Initializers;
-using EmsisoftTest.Data.Contexts;
 using EmsisoftTest.Messaging;
 using EmsisoftTest.Messaging.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -41,13 +40,9 @@ public class Program
         
         services.AddControllers();
         ConfigureSwagger(services);
-
-        // TODO: Get rid of that
-        services.AddSingleton<IMessageProducer, MessageProducer>();
+        
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(ContainerInitializer.Initialize));
         var app = builder.Build();
-
-        await app.ApplyMigrationsAsync();
 
         app.UseHttpsRedirection();
         app.UseCors(x => x

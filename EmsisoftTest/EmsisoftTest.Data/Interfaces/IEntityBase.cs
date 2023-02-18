@@ -1,13 +1,12 @@
-namespace EmsisoftTest.Data.Interfaces
+namespace EmsisoftTest.Data.Interfaces;
+
+public interface IEntityBase
 {
-    public interface IEntityBase
-    {
-        long Id { get; set; }
+    long Id { get; set; }
 
-        DateTime CreatedAt { get; set; }
+    DateTime CreatedAt { get; set; }
 
-        DateTime UpdatedAt { get; set; }
+    DateTime UpdatedAt { get; set; }
 
-        bool IsDeleted { get; set; }
-    }
+    bool IsDeleted { get; set; }
 }

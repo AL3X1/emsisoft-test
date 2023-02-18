@@ -7,9 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Commands" />
-      <Folder Include="Models" />
-      <Folder Include="Queries" />
+      <ProjectReference Include="..\EmsisoftTest.Data\EmsisoftTest.Data.csproj" />
+      <ProjectReference Include="..\EmsisoftTest.Infrastructure\EmsisoftTest.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

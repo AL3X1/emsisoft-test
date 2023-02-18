@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-EmsisoftTest.Processor-9D6A5A6D-FBB6-4573-8263-52EB7DC6592F</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MediatR" Version="12.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EmsisoftTest.Infrastructure\EmsisoftTest.Infrastructure.csproj" />
+      <ProjectReference Include="..\EmsisoftTest.Data\EmsisoftTest.Data.csproj" />
+      <ProjectReference Include="..\EmsisoftTest.Messaging\EmsisoftTest.Messaging.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.EntityFrameworkCore.SqlServer">
+        <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore.sqlserver\7.0.3\lib\net6.0\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+</Project>

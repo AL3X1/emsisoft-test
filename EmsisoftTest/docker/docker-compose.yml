@@ -1,0 +1,21 @@
+version: "3.2"
+services:
+  database:
+    container_name: emsisoft_test_database
+    image: mcr.microsoft.com/mssql/server:latest
+    restart: always
+    ports:
+      - "1433:1433"
+    environment:
+      MSSQL_SA_PASSWORD: ejwwSfDHQyufLtj2OVOJ6JAb6LEHq3N
+      ACCEPT_EULA: 1
+  queue:
+    container_name: emsisoft_test_queue
+    image: rabbitmq:management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: LLR7m4YW14FUZ6lrxME

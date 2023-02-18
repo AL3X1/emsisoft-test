@@ -9,7 +9,6 @@ using Microsoft.OpenApi.Models;
 
 namespace EmsisoftTest.Api;
 
-// TODO: Convert to .NET 6 app
 public class Program
 {
     public static async Task Main(string[] args)
@@ -70,25 +69,6 @@ public class Program
             {
                 Title = "Web API",
                 Version = "v1",
-            });
-
-            options.AddSecurityDefinition("Authorization", new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.ApiKey,
-                In = ParameterLocation.Header,
-                Name = "Authorization",
-                Description = "API Access token",
-            });
-
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Authorization" }
-                    },
-                    new string[] { }
-                }
             });
 
             var xmlFile = $"{Assembly.GetEntryAssembly()?.GetName().Name}.xml";

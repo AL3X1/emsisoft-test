@@ -5,7 +5,7 @@ networks:
       name: emsisoft-network
 services:
   database:
-    container_name: emsisoft_test_database
+    container_name: emsisoft-test-database
     image: mcr.microsoft.com/mssql/server:latest
     restart: always
     ports:

@@ -72,6 +72,8 @@ Deployment can be easily used by `make` command.
 help:                          help dialog
 api:                           build docker container of api
 processor:                     build docker container of processor
+run-database:                  run database separately (for local debugging)
+run-queue:                     run queue separately (for local debugging)
 run:                           run services
 stop:                          stop services
 ```
